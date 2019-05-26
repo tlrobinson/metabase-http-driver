@@ -68,7 +68,7 @@
                                         (json-type->base-type (keyword (:type field))))}))}))
 
 (defmethod driver/mbql->native :http [_ query]
-  (let [database    (qp.store/database (:database query))
+  (let [database    (qp.store/database)
         table       (qp.store/table (:source-table (:query query)))
         table-def   (database->table-def database (:name table))
         breakout    (map (partial mbql-field->expression table-def) (:breakout (:query query)))

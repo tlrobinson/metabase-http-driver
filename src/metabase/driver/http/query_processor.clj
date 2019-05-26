@@ -58,6 +58,7 @@
         result        (client/request {:method  (or (:method query) :get)
                                        :url     (:url query)
                                        :headers (:headers query)
+                                       :body    (if (:body query) (json/generate-string (:body query)))
                                        :accept  :json
                                        :as      :json})
         rows-path     (or (:path (:result query)) "$")

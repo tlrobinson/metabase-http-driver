@@ -1,0 +1,16 @@
+# Complete list of options here: https://github.com/metabase/metabase/wiki/Metabase-Plugin-Manifest-Reference
+info:
+  name: Metabase HTTP Driver
+  version: 1.0.0
+  description: HTTP/REST API driver
+driver:
+  name: http
+  lazy-load: true
+  connection-properties:
+    - name: definitions
+      display-name: Table Definitions
+      type: json
+      default: "{\n  \"tables\": [\n  ]\n}"
+init:
+  - step: load-namespace
+    namespace: metabase.driver.http

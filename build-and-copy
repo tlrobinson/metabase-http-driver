@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -eu
+
+lein clean
+DEBUG=1 LEIN_SNAPSHOTS_IN_RELEASE=true lein uberjar
+
+mkdir -p ../metabase/plugins/
+cp target/uberjar/http.metabase-driver.jar ../metabase/plugins/

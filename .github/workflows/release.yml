@@ -9,7 +9,7 @@ on:
       - v*
 
 jobs:
-  ubuntu:
+  build-release:
     runs-on: ubuntu-latest
     name: Build on Ubuntu
 
@@ -39,29 +39,10 @@ jobs:
         run: |
           clojure -X:build :project-dir \"${PWD}\"
 
-      - uses: actions/upload-artifact@v2
-        with:
-          name: http-metabase-driver
-          path: ./target/http.metabase-driver.jar
-
-  release:
-    runs-on: ubuntu-latest
-    name: Download artifacts
-    needs: [ubuntu]
-
-    steps:
-      - name: Download linux
-        uses: actions/download-artifact@v2
-        with:
-          name: http-metabase-driver
-
-      - name: Display structure of downloaded files
-        run: ls -R
-
       - name: Release to GiHub
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            http.metabase-driver.jar
+            ./target/http.metabase-driver.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

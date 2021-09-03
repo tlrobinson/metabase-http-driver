@@ -1,0 +1,21 @@
+{:paths
+ ["src" "resources"]
+
+ :deps
+ {org.clojure/clojure {:mvn/version "1.10.3"}
+  json-path/json-path {:mvn/version "2.1.0"}
+  cheshire/cheshire {:mvn/version "5.10.1"}
+  metabase/metabase-core {:local/root "./metabase"}}
+
+ ;; build the driver with clojure -X:build
+ :aliases
+ {:nrepl
+  {:extra-deps {cider/cider-nrepl {:mvn/version "0.26.0"}}
+   :main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}
+
+  :build
+  {:extra-deps {metabase/build-drivers {:local/root "./metabase/bin/build-drivers"}}
+   :exec-fn    build-drivers.build-driver/build-driver!
+   :exec-args  {:driver      :http
+                :project-dir "./"
+                :target-dir  "./target"}}}}

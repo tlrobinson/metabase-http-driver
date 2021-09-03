@@ -1,0 +1,67 @@
+name: Release
+
+# Controls when the action will run. 
+on:
+  push:
+    tags:
+      - v*.*.*
+      - v*.*
+      - v*
+
+jobs:
+  ubuntu:
+    runs-on: ubuntu-latest
+    name: Build on Ubuntu
+
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Prepare java
+        uses: actions/setup-java@v2.3.0
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+
+      - name: Install clojure tools-deps
+        uses: DeLaGuardo/setup-clojure@master
+        with:
+          tools-deps: 1.10.3.967
+
+      - name: Checkout Metabase source
+        run: |
+          git clone --depth=1 -b master https://github.com/metabase/metabase.git metabase
+          ./prepare-metabase.sh
+
+      - name: Build
+        run: |
+          clojure -X:build :project-dir \"${PWD}\"
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: http-metabase-driver
+          path: ./target/http.metabase-driver.jar
+
+  release:
+    runs-on: ubuntu-latest
+    name: Download artifacts
+    needs: [ubuntu]
+
+    steps:
+      - name: Download linux
+        uses: actions/download-artifact@v2
+        with:
+          name: http-metabase-driver
+
+      - name: Display structure of downloaded files
+        run: ls -R
+
+      - name: Release to GiHub
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            http.metabase-driver.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

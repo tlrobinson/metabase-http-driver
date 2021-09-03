@@ -9,7 +9,7 @@ Previous discussion: https://github.com/metabase/metabase/pull/7047
 Currently the simplest "native" query for this driver is simply an object with a `url` property:
 
 ```json
-{ "url": "https://api.coinmarketcap.com/v1/ticker/" }
+{ "url": "https://api.coindesk.com/v1/bpi/currentprice.json" }
 ```
 
 The driver will make a `GET` request and parse the resulting JSON array into rows. Currently it only supports JSON.
@@ -18,13 +18,23 @@ You can provide a different `method` as well as `headers` and a JSON `body`:
 
 ```json
 {
-  "url": "https://api.coinmarketcap.com/v1/ticker/",
+  "url": "https://beta.pokeapi.co/graphql/v1beta",
   "method": "POST",
   "headers": {
-    "Authentication": "SOMETOKEN"
+    "Accept": "application/json",
+    "Content-Type": "application/json"
+  },
+  "result": {
+    "path": "$.data.pokemon_v2_item",
+    "fields": [
+      "$.name",
+      "$.cost"
+    ]
   },
   "body": {
-    "foo": "bar"
+    "query": "query getItems{pokemon_v2_item{name,cost}}",
+    "variables": null,
+    "operationName": "getItems"
   }
 }
 ```
@@ -33,10 +43,10 @@ Additionally, you can provide a `result` object with a JSONPath to the "root" in
 
 ```json
 {
-  "url" : "https://blockchain.info/blocks?format=json",
+  "url" : "https://pokeapi.co/api/v2/pokemon?limit=100&offset=200",
   "result" : {
-    "path" : "blocks",
-    "fields": ["height", "time"]
+    "path" : "$.results",
+    "fields": ["$.name"]
   }
 }
 ```
@@ -47,16 +57,15 @@ You can also predefine "tables" in the database configuration's `Table Definitio
 {
    "tables" : [
       {
-         "name" : "Blocks",
-         "url" : "https://blockchain.info/blocks?format=json",
+         "name" : "Ability",
+         "url" : "https://pokeapi.co/api/v2/ability/?limit=20&offset=20",
          "fields" : [
-            { "name" : "height", "type" : "number" },
-            { "name" : "hash", "type" : "string" },
-            { "name" : "time", "type" : "number" },
-            { "type" : "boolean", "name" : "main_chain" }
+            { "name" : "$.name", "type" : "string" },
+            { "name" : "$.url", "type" : "string" },
+            { "name" : "$.cost", "type" : "number" }
          ],
          "result" : {
-            "path" : "blocks"
+            "path" : "$.results"
          }
       }
    ]
@@ -70,34 +79,17 @@ There is limited support for aggregations and breakouts, but this is very experi
 ### Prereq: Install Metabase as a local maven dependency, compiled for building drivers
 
 Clone the [Metabase repo](https://github.com/metabase/metabase) first if you haven't already done so.
-
 ```bash
-cd /path/to/metabase_source
-lein install-for-building-drivers
+# clone metabase repository
+git clone --depth=1 -b master https://github.com/metabase/metabase.git metabase
+
+# build metabase jars
+./prepare-metabase.sh
 ```
 
 ### Build the HTTP driver
-
 ```bash
-# (In the HTTP driver directory)
-lein clean
-DEBUG=1 LEIN_SNAPSHOTS_IN_RELEASE=true lein uberjar
+clj -X:build :project-dir \"${PWD}\"
 ```
 
-### Copy it to your plugins dir and restart Metabase
-
-```bash
-mkdir -p /path/to/metabase/plugins/
-cp target/uberjar/http.metabase-driver.jar /path/to/metabase/plugins/
-jar -jar /path/to/metabase/metabase.jar
-```
-
-_or:_
-
-```bash
-mkdir -p /path/to/metabase_source/plugins
-cp target/uberjar/http.metabase-driver.jar /path/to/metabase_source/plugins/
-cd /path/to/metabase_source
-lein run
-```
-
+This will create `target/http.metabase-driver.jar` Copy this file to `/path/to/metabase/plugins/` and restart your server, and the driver will show up.

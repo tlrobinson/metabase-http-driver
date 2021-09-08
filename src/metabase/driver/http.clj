@@ -97,7 +97,7 @@
     (log/info "table" table)
     (log/info "breakout" breakout)
     (log/info "aggregation" aggregation)
-    {:query (merge (select-keys table-def [:method :url :headers])
+    {:query (merge (select-keys table-def [:method :url :headers :body])
                    {:result (merge (:result table-def)
                                    {:breakout     breakout
                                     :aggregation  aggregation})})

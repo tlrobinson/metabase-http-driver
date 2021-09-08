@@ -5,6 +5,7 @@ info:
   description: HTTP/REST API driver
 driver:
   name: http
+  display-name: HTTP/REST API
   lazy-load: true
   connection-properties:
     - name: definitions

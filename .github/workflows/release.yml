@@ -18,6 +18,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: isbang/compose-action@v1.4.1
         with:
+          compose-file: "./docker-compose.yaml"
           up-flags: "--build"
 
       - name: Release to GitHub
@@ -25,5 +26,3 @@ jobs:
         with:
           files: |
             ./dist/http.metabase-driver.jar
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

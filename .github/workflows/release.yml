@@ -3,6 +3,10 @@ name: Release
 # Controls when the action will run.
 on:
   push:
+    branches:
+      - master
+      - main
+      - build
 
 jobs:
   build-release:
@@ -18,8 +22,8 @@ jobs:
           docker-compose up
       - name: Release to GitHub
         run: |
-          git config --global user.name 'HTTP Driver Build'
-          git config --global user.email 'no-reply@users.noreply.github.com'
+          git config --global user.name 'HTTP Metabase Driver Build'
+          git config --global user.email '23339146+aneuway2@users.noreply.github.com'
           git add ./dist/http.metabase-driver.jar
           git commit -m "Build driver"
           git push

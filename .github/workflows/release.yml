@@ -22,4 +22,3 @@ jobs:
           files: |
             ./dist/http.metabase-driver.jar
           fail_on_unmatched_files: true
-        needs: Docker Compose

@@ -5,7 +5,7 @@
  {org.clojure/clojure {:mvn/version "1.10.3"}
   json-path/json-path {:mvn/version "2.1.0"}
   cheshire/cheshire {:mvn/version "5.10.1"}
-  metabase/metabase-core {:local/root "/home/node/"}}
+  metabase/metabase-core {:local/root "/metabase"}}
 
  ;; These are needed for the Athena and Redshift drivers in order to build them. Maven repos from subprojects do not
  ;; get copied over -- see
@@ -19,8 +19,8 @@
  ;; build the driver with clojure -X:build
  :aliases
  {:build
-  {:extra-deps {metabase/metabase-core {:local/root "/home/node/"}
-                metabase/build-drivers {:local/root "/home/node/bin/build-drivers"}}
+  {:extra-deps {metabase/metabase-core {:local/root "/metabase"}
+                metabase/build-drivers {:local/root "/metabase/bin/build-drivers"}}
    :exec-fn    build-drivers.build-driver/build-driver!
    :exec-args  {:driver      :http
                 :project-dir "/build"

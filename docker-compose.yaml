@@ -4,5 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        METABASE_VERSION: v0.43.3
     volumes:
       - ./:/build

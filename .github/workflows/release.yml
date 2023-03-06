@@ -1,6 +1,6 @@
 name: Release
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   push:
     tags:
@@ -13,36 +13,17 @@ jobs:
     runs-on: ubuntu-latest
     name: Build on Ubuntu
 
-    strategy:
-      fail-fast: false
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Prepare java
-        uses: actions/setup-java@v2.3.0
+      # need checkout before using compose-action
+      - uses: actions/checkout@v3
+      - uses: isbang/compose-action@v1.4.1
         with:
-          distribution: 'adopt'
-          java-version: '11'
+          up-flags: "--build"
 
-      - name: Install clojure tools-deps
-        uses: DeLaGuardo/setup-clojure@master
-        with:
-          tools-deps: 1.10.3.967
-
-      - name: Checkout Metabase source
-        run: |
-          git clone --depth=1 -b master https://github.com/metabase/metabase.git metabase
-          ./prepare-metabase.sh
-
-      - name: Build
-        run: |
-          clojure -X:build :project-dir \"${PWD}\"
-
-      - name: Release to GiHub
+      - name: Release to GitHub
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            ./target/http.metabase-driver.jar
+            ./dist/http.metabase-driver.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

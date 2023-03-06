@@ -1,0 +1,8 @@
+version: "3.7"
+services:
+  build_http_driver:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/build

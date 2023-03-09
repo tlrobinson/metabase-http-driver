@@ -6,6 +6,6 @@ services:
       dockerfile: Dockerfile
       args:
         METABASE_VERSION:
-        ARG CLOJURE_VERSION:
+        CLOJURE_VERSION:
     volumes:
       - ./:/build

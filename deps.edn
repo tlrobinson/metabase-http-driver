@@ -2,8 +2,7 @@
  ["src" "resources"]
 
  :deps
- {org.clojure/clojure {:mvn/version "1.10.3"}
-  json-path/json-path {:mvn/version "2.1.0"}
+ {json-path/json-path {:mvn/version "2.1.0"}
   cheshire/cheshire {:mvn/version "5.10.1"}
   metabase/metabase-core {:local/root "/metabase"}}
 

@@ -1,16 +1,20 @@
 # Complete list of options here: https://github.com/metabase/metabase/wiki/Metabase-Plugin-Manifest-Reference
 info:
   name: Metabase HTTP Driver
-  version: 1.0.0
+  version: 1.1.1
   description: HTTP/REST API driver
 driver:
   name: http
+  display-name: HTTP/REST API
   lazy-load: true
   connection-properties:
     - name: definitions
       display-name: Table Definitions
-      type: json
-      default: "{\n  \"tables\": [\n  ]\n}"
+      helper-text: >
+        The table definitions define what URLs correspond to a table
+        and fields/results within that data.
+      type: string
+      placeholder: '{"tables":[{"name":"table_name","url":"https://example.com"}]}'
 init:
   - step: load-namespace
     namespace: metabase.driver.http

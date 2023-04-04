@@ -1,0 +1,26 @@
+{:paths
+ ["src" "resources"]
+
+ :deps
+ {json-path/json-path {:mvn/version "2.1.0"}
+  cheshire/cheshire {:mvn/version "5.10.1"}
+  metabase/metabase-core {:local/root "/metabase"}}
+
+ ;; These are needed for the Athena and Redshift drivers in order to build them. Maven repos from subprojects do not
+ ;; get copied over -- see
+ ;; https://ask.clojure.org/index.php/10726/deps-manifest-dependencies-respect-repos-dependent-project
+ :mvn/repos
+ {"athena"   {:url "https://s3.amazonaws.com/maven-athena"}
+  "redshift" {:url "https://s3.amazonaws.com/redshift-maven-repository/release"}
+  ;; for metabase/saml20-clj
+  "opensaml" {:url "https://build.shibboleth.net/nexus/content/repositories/releases/"}}
+
+ ;; build the driver with clojure -X:build
+ :aliases
+ {:build
+  {:extra-deps {metabase/metabase-core {:local/root "/metabase"}
+                metabase/build-drivers {:local/root "/metabase/bin/build-drivers"}}
+   :exec-fn    build-drivers.build-driver/build-driver!
+   :exec-args  {:driver      :http
+                :project-dir "/build"
+                :target-dir  "/build/dist"}}}}

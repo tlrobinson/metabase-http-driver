@@ -1,0 +1,29 @@
+name: Release
+
+# Controls when the action will run.
+on:
+  push:
+    branches:
+      - master
+      - main
+      - build
+
+jobs:
+  build-release:
+    name: Build on Ubuntu
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build Driver
+        run: |
+          docker-compose up
+      - name: Release to GitHub
+        run: |
+          git config --global user.name 'HTTP Metabase Driver Build'
+          git config --global user.email '23339146+aneuway2@users.noreply.github.com'
+          git add ./dist/http.metabase-driver.jar
+          git commit -m "Build driver"
+          git push
